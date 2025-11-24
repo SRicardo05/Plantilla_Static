@@ -15,7 +15,6 @@ COPY --chown=nginx:nginx ./public /usr/share/nginx/html
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
 
-USER viewer
 
 EXPOSE 80
 
