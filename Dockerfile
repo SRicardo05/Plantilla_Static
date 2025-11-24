@@ -1,4 +1,5 @@
 # Usar versión específica para reproducibilidad
+
 FROM nginx:1.25-alpine
 
 # Metadata del contenedor
@@ -13,6 +14,8 @@ COPY --chown=nginx:nginx ./public /usr/share/nginx/html
 # Healthcheck para verificar que nginx responde
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
+
+USER viewer
 
 EXPOSE 80
 
