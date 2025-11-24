@@ -9,9 +9,10 @@ LABEL platform="hosting-platform"
 # Copiar contenido público
 COPY --chown=nginx:nginx ./public /usr/share/nginx/html
 
-# Instalar herramientas de stress
+# Instalar herramientas (stress-ng en lugar de stress que no está en repo estable)
 # Alpine usa apk como gestor de paquetes
-RUN apk add --no-cache bash coreutils stress curl
+RUN apk add --no-cache bash coreutils curl stress-ng \
+    && rm -rf /var/cache/apk/*
 
 # Healthcheck para nginx
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
@@ -22,4 +23,4 @@ EXPOSE 80
 # Script de stress opcional
 # Puedes ejecutar stress directamente con docker exec
 # CMD por defecto deja nginx corriendo
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
