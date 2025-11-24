@@ -1,22 +1,25 @@
-# Usar versión específica para reproducibilidad
-
+# Base original
 FROM nginx:1.25-alpine
 
-# Metadata del contenedor
+# Metadata
 LABEL maintainer="hosting-platform"
 LABEL project.type="static"
 LABEL platform="hosting-platform"
 
-# Copiar todo el contenido público de una vez
-# nginx:alpine ya incluye usuario 'nginx' (uid=101, gid=101)
+# Copiar contenido público
 COPY --chown=nginx:nginx ./public /usr/share/nginx/html
 
-# Healthcheck para verificar que nginx responde
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
+# Instalar herramientas de stress
+# Alpine usa apk como gestor de paquetes
+RUN apk add --no-cache bash coreutils stress curl
 
+# Healthcheck para nginx
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -sSf http://localhost/ || exit 1
 
 EXPOSE 80
 
-# Nginx corre como root pero los workers como nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Script de stress opcional
+# Puedes ejecutar stress directamente con docker exec
+# CMD por defecto deja nginx corriendo
+CMD ["nginx", "-g", "daemon off;"]
