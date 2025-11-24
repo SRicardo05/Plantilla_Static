@@ -8,6 +8,4 @@ COPY ./public /usr/share/nginx/html
 RUN apk add --no-cache bash coreutils curl stress-ng \
     && rm -rf /var/cache/apk/*
 
-EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
